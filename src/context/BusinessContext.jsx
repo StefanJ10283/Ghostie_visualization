@@ -28,6 +28,7 @@ export function BusinessProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useBusiness() {
   return useContext(BusinessContext);
 }

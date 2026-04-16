@@ -10,11 +10,11 @@ const glowSx = {
 };
 
 function useCountUp(target, duration = 700) {
-  const [display, setDisplay] = useState(target);
+  const [animated, setAnimated] = useState(typeof target === 'number' ? target : 0);
   const prev = useRef(target);
 
   useEffect(() => {
-    if (typeof target !== 'number') { setDisplay(target); return; }
+    if (typeof target !== 'number') return;
     const from = typeof prev.current === 'number' ? prev.current : 0;
     prev.current = target;
     let start = null;
@@ -23,13 +23,14 @@ function useCountUp(target, duration = 700) {
       const progress = Math.min((ts - start) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
       const current = from + (target - from) * eased;
-      setDisplay(Number.isInteger(target) ? Math.round(current) : Math.round(current * 10) / 10);
+      setAnimated(Number.isInteger(target) ? Math.round(current) : Math.round(current * 10) / 10);
       if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
   }, [target, duration]);
 
-  return display;
+  // Non-numbers (strings, etc.) are returned directly without animation
+  return typeof target !== 'number' ? target : animated;
 }
 
 export function StatsCard({ label, value, icon: Icon, trend, glow }) {

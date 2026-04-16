@@ -83,7 +83,7 @@ export default function DashboardPage() {
 
   const [favouritedCompanies, setFavouritedCompanies] = useState([]);
   useEffect(() => {
-    if (companies.length === 0 || favourites.length === 0) { setFavouritedCompanies([]); return; }
+    if (companies.length === 0 || favourites.length === 0) return;
     Promise.all(companies.map(async (c) => ({ ...c, key: await computeKey(c.business_name, c.location, c.category) })))
       .then((withKeys) => setFavouritedCompanies(withKeys.filter((c) => favourites.includes(c.key)).slice(0, 4)));
   }, [companies, favourites]);

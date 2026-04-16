@@ -296,7 +296,7 @@ export default function DataRetrievalPage() {
                             const res = await api(`/data-retrieval/retrieve/${result.hash_key}`);
                             const cached = await res.json();
                             setResult({ ...cached, status: 'NEW DATA', _fromCache: true });
-                          } catch { } finally { setLoading(false); }
+                          } catch { /* swallowed */ } finally { setLoading(false); }
                         }}
                       >
                         {loading ? <CircularProgress size={14} color="inherit" /> : 'Load anyway'}
