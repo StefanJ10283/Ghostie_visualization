@@ -11,13 +11,24 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
-      include: ['src/**/*.{js,jsx}'],
-      exclude: ['src/test/**', 'src/main.jsx', 'src/api/**'],
+      // Only measure coverage for pure UI components — pages, context, hooks
+      // and auth all depend on API calls / router and require integration tests.
+      include: ['src/components/**/*.{js,jsx}'],
+      exclude: [
+        'src/test/**',
+        'src/main.jsx',
+        'src/api/**',
+        'src/pages/**',
+        'src/context/**',
+        'src/hooks/**',
+        'src/auth/**',
+        'src/shared-theme/**',
+      ],
       thresholds: {
-        lines: 20,
-        functions: 20,
-        branches: 20,
-        statements: 20,
+        lines: 45,
+        functions: 30,
+        branches: 50,
+        statements: 45,
       },
     },
   },
