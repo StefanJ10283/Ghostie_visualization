@@ -1,5 +1,5 @@
 import { alpha } from '@mui/material/styles';
-import { gray } from '../themePrimitives';
+import { gray, aurora } from '../themePrimitives';
 
 /* eslint-disable import/prefer-default-export */
 export const surfacesCustomizations = {
@@ -79,7 +79,9 @@ export const surfacesCustomizations = {
                 boxShadow: 'none',
                 background: 'hsl(0, 0%, 100%)',
                 ...theme.applyStyles('dark', {
-                  background: alpha(gray[900], 0.4),
+                  background: alpha(aurora.card, 0.6),
+                  backdropFilter: 'blur(16px)',
+                  borderColor: alpha(aurora.border, 0.5),
                 }),
               },
             },
