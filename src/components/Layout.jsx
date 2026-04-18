@@ -155,12 +155,18 @@ export default function Layout({ children }) {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', pt: '64px' }}>
       <Box sx={{ mt: 2, flex: 1 }}>
         <Box sx={{ px: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Box sx={{
-            width: 36, height: 36, borderRadius: 2,
-            background: 'linear-gradient(135deg, hsl(142,69%,58%), hsl(262,83%,74%))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}>
-            <AnalyticsIcon sx={{ fontSize: 18, color: 'hsl(234,40%,10%)' }} />
+          <Box sx={{ flexShrink: 0, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C7.03 2 3 6.03 3 11v9l3-3 3 3 3-3 3 3 3-3v-9c0-4.97-4.03-9-9-9z" fill="url(#ghost-grad)"/>
+              <circle cx="9" cy="11" r="1.5" fill="hsl(234,40%,10%)"/>
+              <circle cx="15" cy="11" r="1.5" fill="hsl(234,40%,10%)"/>
+              <defs>
+                <linearGradient id="ghost-grad" x1="3" y1="2" x2="21" y2="20" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="hsl(142,69%,45%)"/>
+                  <stop offset="100%" stopColor="hsl(200,80%,50%)"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </Box>
           <Box>
             <Typography variant="body2" sx={{ fontWeight: 700, color: 'hsl(210,40%,93%)', lineHeight: 1.2, fontFamily: '"Sora", sans-serif' }}>
