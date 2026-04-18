@@ -91,8 +91,6 @@ export default function ScoreCardPage() {
 
   useEffect(() => {
     const params = new URLSearchParams({ business_name: decodedName, location, category });
-    setLoading(true);
-    setError('');
 
     Promise.all([
       publicFetch(`/analytical-model/sentiment?${params}`).then((r) => r.json()),
@@ -100,8 +98,6 @@ export default function ScoreCardPage() {
     ]).then(([sent, hist]) => {
       if (sent.detail) throw new Error(sent.detail);
       setSentiment(sent);
-
-      // Build sparkline data from history
       const results = hist.results ?? [];
       const byDate = new Map();
       [...results].reverse().forEach((r) => {
@@ -109,9 +105,11 @@ export default function ScoreCardPage() {
         byDate.set(label, r.overall_score);
       });
       setHistory(Array.from(byDate.entries()).map(([date, score]) => ({ date, score })));
+      setLoading(false);
     }).catch((err) => {
       setError(err.message || 'Could not load scorecard.');
-    }).finally(() => setLoading(false));
+      setLoading(false);
+    });
   }, [decodedName, location, category]);
 
   const handleShare = async () => {

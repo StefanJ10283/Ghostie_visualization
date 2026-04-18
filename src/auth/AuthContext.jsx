@@ -34,9 +34,11 @@ export function AuthProvider({ children }) {
 
   const _pushToExtension = (newToken) => {
     try {
+      // eslint-disable-next-line no-undef
       if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+        // eslint-disable-next-line no-undef
         chrome.runtime.sendMessage(
-          undefined, // extension ID — undefined lets Chrome find it via externally_connectable
+          undefined,
           { type: 'GHOSTIE_SET_TOKEN', token: newToken },
           () => { /* fire-and-forget */ },
         );
