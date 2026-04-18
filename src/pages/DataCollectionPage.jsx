@@ -22,6 +22,7 @@ import DatabaseIcon from '@mui/icons-material/Storage';
 import { StatsCard } from '../components/StatsCard';
 import { makeApiClient } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
+import { useBusiness } from '../context/BusinessContext';
 
 const SOURCES = [
   { key: 'news_count',        name: 'NewsAPI',       sub: 'newsapi.org',         icon: NewspaperIcon },
@@ -39,6 +40,7 @@ function SourceStatus({ count }) {
 export default function DataCollectionPage() {
   const { token } = useAuth();
   const api = makeApiClient(token);
+  const { refreshCompanies } = useBusiness();
   const [form, setForm] = useState({ business_name: '', location: '', category: '' });
   const [result, setResult] = useState(null);
   const [activity, setActivity] = useState([]);
@@ -77,6 +79,7 @@ export default function DataCollectionPage() {
         }
       });
       addActivity(`Collection complete — ${data.total_results} total results`, 'success');
+      refreshCompanies();
     } catch (err) {
       setError(err.message);
       addActivity(`Collection failed: ${err.message}`, 'error');

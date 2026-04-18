@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Ghostie</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: hsl(228,38%,11%);
+      color: hsl(210,40%,93%);
+      line-height: 1.7;
+      padding: 48px 24px;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
+    .logo svg { flex-shrink: 0; }
+    .logo-text { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .updated { font-size: 13px; color: hsl(215,20%,55%); margin-bottom: 36px; }
+    h2 { font-size: 17px; font-weight: 700; color: hsl(142,69%,58%); margin: 32px 0 10px; }
+    p { font-size: 14px; color: hsl(215,20%,72%); margin-bottom: 12px; }
+    ul { padding-left: 20px; margin-bottom: 12px; }
+    li { font-size: 14px; color: hsl(215,20%,72%); margin-bottom: 6px; }
+    a { color: hsl(142,69%,58%); }
+    .divider { border: none; border-top: 1px solid hsl(230,25%,22%); margin: 32px 0; }
+    .footer { font-size: 12px; color: hsl(215,20%,45%); margin-top: 48px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C7.03 2 3 6.03 3 11v9l3-3 3 3 3-3 3 3 3-3v-9c0-4.97-4.03-9-9-9z" fill="url(#g)"/>
+        <circle cx="9" cy="11" r="1.5" fill="hsl(228,38%,11%)"/>
+        <circle cx="15" cy="11" r="1.5" fill="hsl(228,38%,11%)"/>
+        <defs>
+          <linearGradient id="g" x1="3" y1="2" x2="21" y2="20" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="hsl(142,69%,45%)"/>
+            <stop offset="100%" stop-color="hsl(200,80%,50%)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="logo-text">Ghostie</span>
+    </div>
+
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: April 2026</p>
+
+    <p>This Privacy Policy describes how Ghostie ("we", "us", or "our") handles information collected through the Ghostie web application and Chrome Extension.</p>
+
+    <h2>Information We Collect</h2>
+    <ul>
+      <li><strong>Account credentials</strong> — email address and username provided at sign-up, used to authenticate your account.</li>
+      <li><strong>Search queries</strong> — business names, locations, and categories you submit for sentiment analysis.</li>
+      <li><strong>Authentication tokens</strong> — JWT tokens stored locally in your browser (localStorage and, for the Chrome Extension, chrome.storage.local) to keep you signed in.</li>
+      <li><strong>Selected text</strong> — text you highlight and submit via the Chrome Extension for sentiment analysis. This text is sent to our API and is not stored persistently.</li>
+    </ul>
+
+    <h2>How We Use Your Information</h2>
+    <ul>
+      <li>To authenticate your account and provide access to the Ghostie platform.</li>
+      <li>To run sentiment analysis on businesses and text you submit.</li>
+      <li>To display personalised results including favourites and analysis history.</li>
+    </ul>
+
+    <h2>Data Storage</h2>
+    <p>Authentication tokens are stored locally on your device only. We do not store highlighted text or search queries beyond the duration of your request. Analysis results are stored in our database and associated with your account to power the history and leaderboard features.</p>
+
+    <h2>Chrome Extension</h2>
+    <p>The Ghostie Chrome Extension stores your authentication token in <code>chrome.storage.local</code> on your device. It reads text you choose to highlight only when you explicitly trigger analysis via the right-click context menu. No browsing activity is tracked passively.</p>
+
+    <h2>Third-Party Services</h2>
+    <p>Ghostie collects publicly available data from third-party sources including Google Maps, NewsAPI, and Reddit to generate sentiment scores. We do not sell or share your personal information with these or any other third parties.</p>
+
+    <h2>Data Retention</h2>
+    <p>You may delete your account at any time, which will remove your personal data from our systems. Analysis results associated with your account will also be removed upon request.</p>
+
+    <h2>Contact</h2>
+    <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:stefan.jonathan50@gmail.com">stefan.jonathan50@gmail.com</a>.</p>
+
+    <hr class="divider" />
+    <p class="footer">© 2026 Ghostie. All rights reserved.</p>
+  </div>
+</body>
+</html>

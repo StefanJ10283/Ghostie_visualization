@@ -12,17 +12,25 @@ export function BusinessProvider({ children }) {
   const [historyBusiness, setHistoryBusiness] = useState(EMPTY);
   const [companies, setCompanies] = useState([]);
 
-  useEffect(() => {
-    if (!isAuthenticated || !token) return;
-    const api = makeApiClient(token);
+  const fetchCompanies = (api) => {
     api('/data-retrieval/companies')
       .then((r) => r.json())
       .then((data) => setCompanies(data.companies ?? []))
       .catch(() => {});
+  };
+
+  useEffect(() => {
+    if (!isAuthenticated || !token) return;
+    fetchCompanies(makeApiClient(token));
   }, [isAuthenticated, token]);
 
+  const refreshCompanies = () => {
+    if (!token) return;
+    fetchCompanies(makeApiClient(token));
+  };
+
   return (
-    <BusinessContext.Provider value={{ sentimentBusiness, setSentimentBusiness, historyBusiness, setHistoryBusiness, companies }}>
+    <BusinessContext.Provider value={{ sentimentBusiness, setSentimentBusiness, historyBusiness, setHistoryBusiness, companies, refreshCompanies }}>
       {children}
     </BusinessContext.Provider>
   );

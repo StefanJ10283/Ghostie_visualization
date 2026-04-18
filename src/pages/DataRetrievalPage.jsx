@@ -29,6 +29,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import { StatsCard } from '../components/StatsCard';
 import { makeApiClient } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
+import { useBusiness } from '../context/BusinessContext';
 
 const sourceLabel = (s) => {
   if (s === 'google_maps_reviews') return 'Review';
@@ -201,6 +202,7 @@ const fadeUp = (delay = 0) => ({
 export default function DataRetrievalPage() {
   const { token } = useAuth();
   const api = makeApiClient(token);
+  const { refreshCompanies } = useBusiness();
   const [tab, setTab] = useState(0);
   const [form, setForm] = useState({ business_name: '', location: '', category: '' });
   const [search, setSearch] = useState('');
@@ -227,6 +229,7 @@ export default function DataRetrievalPage() {
         throw new Error(err.detail || 'Retrieval failed');
       }
       setResult(await res.json());
+      refreshCompanies();
     } catch (err) {
       setError(err.message);
     } finally {

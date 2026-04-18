@@ -20,6 +20,9 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import CheckIcon from '@mui/icons-material/Check';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as ReTooltip, ResponsiveContainer, Cell,
+} from 'recharts';
 import { SentimentBadge } from '../components/SentimentBadge';
 import { StatsCard } from '../components/StatsCard';
 import { ScoreGauge } from '../components/ScoreGauge';
@@ -295,6 +298,63 @@ export default function SentimentPage() {
               <StatsCard label="Star Rating" value={result.overall_rating} icon={TagIcon} glow="purple" />
             </Grid>
           </Grid>
+
+          {/* Source Comparison */}
+          {result.breakdown?.length > 0 && (() => {
+            const grouped = {};
+            result.breakdown.forEach((item) => {
+              const lbl = sourceLabel(item.source);
+              if (!grouped[lbl]) grouped[lbl] = { scores: [], source: item.source };
+              grouped[lbl].scores.push(item.score);
+            });
+            const chartData = Object.entries(grouped).map(([name, { scores, source }]) => ({
+              name,
+              avg: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
+              count: scores.length,
+              color: sourceColor(source),
+            }));
+            if (chartData.length < 2) return null;
+            return (
+              <Box sx={{ borderRadius: '12px', border: '1px solid hsl(230,25%,25%)', bgcolor: 'hsl(228,38%,16%)', overflow: 'hidden', ...fadeUp(0.13) }}>
+                <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid hsl(230,25%,25%)', bgcolor: 'rgba(255,255,255,0.03)' }}>
+                  <Typography variant="subtitle2" fontWeight={600} sx={{ fontFamily: '"Sora", sans-serif', color: 'hsl(210,40%,93%)' }}>
+                    Source Comparison
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'hsl(215,20%,55%)' }}>
+                    Average sentiment score per source
+                  </Typography>
+                </Box>
+                <Box sx={{ px: 2.5, py: 2 }}>
+                  <ResponsiveContainer width="100%" height={180}>
+                    <BarChart data={chartData} barSize={36}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(230,25%,22%)" vertical={false} />
+                      <XAxis dataKey="name" stroke="hsl(215,20%,60%)" tick={{ fill: 'hsl(215,20%,60%)', fontSize: 12 }} />
+                      <YAxis domain={[0, 100]} stroke="hsl(215,20%,60%)" tick={{ fill: 'hsl(215,20%,60%)', fontSize: 11 }} width={32} />
+                      <ReTooltip
+                        contentStyle={{ backgroundColor: 'hsl(228,38%,16%)', border: '1px solid hsl(230,25%,25%)', borderRadius: 8, color: 'hsl(210,40%,93%)' }}
+                        formatter={(value, _, props) => [`${value}/100 (${props.payload.count} items)`, 'Avg Score']}
+                      />
+                      <Bar dataKey="avg" radius={[6, 6, 0, 0]}>
+                        {chartData.map((entry, i) => (
+                          <Cell key={i} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', mt: 1 }}>
+                    {chartData.map((d) => (
+                      <Box key={d.name} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: d.color }} />
+                        <Typography variant="caption" sx={{ color: 'hsl(215,20%,60%)' }}>
+                          {d.name} — {d.avg}/100
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              </Box>
+            );
+          })()}
 
           {/* Breakdown */}
           {result.breakdown?.length > 0 && (
