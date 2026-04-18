@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -18,6 +19,8 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CategoryIcon from '@mui/icons-material/Category';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import ShareIcon from '@mui/icons-material/Share';
+import CheckIcon from '@mui/icons-material/Check';
 import { SentimentBadge } from '../components/SentimentBadge';
 import { StatsCard } from '../components/StatsCard';
 import { ScoreGauge } from '../components/ScoreGauge';
@@ -67,6 +70,7 @@ const fadeUp = (delay = 0) => ({
 export default function SentimentPage() {
   const { token } = useAuth();
   const api = makeApiClient(token);
+  const navigate = useNavigate();
   const { favourites, toggle } = useFavourites(api);
   const { sentimentBusiness: business, setSentimentBusiness: setBusiness } = useBusiness();
   const { showToast } = useToast();
@@ -74,6 +78,15 @@ export default function SentimentPage() {
   const [businessKey, setBusinessKey] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = () => {
+    if (!result) return;
+    const url = `${window.location.origin}/score/${encodeURIComponent(result.business_name)}?location=${encodeURIComponent(result.location)}&category=${encodeURIComponent(result.category)}`;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -184,26 +197,42 @@ export default function SentimentPage() {
                     </Typography>
                     <SentimentBadge score={displayScore} size="md" />
                   </Box>
-                  <Tooltip title={isFav ? 'Remove from favourites' : 'Add to favourites'}>
-                    <span>
+                  <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    <Tooltip title={isFav ? 'Remove from favourites' : 'Add to favourites'}>
+                      <span>
+                        <IconButton
+                          size="small"
+                          disabled={!businessKey}
+                          onClick={() => {
+                            toggle(businessKey);
+                            showToast(isFav ? 'Removed from favourites' : 'Added to favourites', isFav ? 'info' : 'success');
+                          }}
+                          sx={{
+                            color: isFav ? 'hsl(45,93%,58%)' : 'hsl(215,20%,60%)',
+                            bgcolor: isFav ? 'rgba(250,185,0,0.1)' : 'rgba(255,255,255,0.05)',
+                            '&:hover': { bgcolor: isFav ? 'rgba(250,185,0,0.18)' : 'rgba(255,255,255,0.1)' },
+                            transition: 'all 0.2s',
+                          }}
+                        >
+                          {isFav ? <StarIcon /> : <StarBorderIcon />}
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title={copied ? 'Link copied!' : 'Share public scorecard'}>
                       <IconButton
                         size="small"
-                        disabled={!businessKey}
-                        onClick={() => {
-                          toggle(businessKey);
-                          showToast(isFav ? 'Removed from favourites' : 'Added to favourites', isFav ? 'info' : 'success');
-                        }}
+                        onClick={handleShare}
                         sx={{
-                          color: isFav ? 'hsl(45,93%,58%)' : 'hsl(215,20%,60%)',
-                          bgcolor: isFav ? 'rgba(250,185,0,0.1)' : 'rgba(255,255,255,0.05)',
-                          '&:hover': { bgcolor: isFav ? 'rgba(250,185,0,0.18)' : 'rgba(255,255,255,0.1)' },
+                          color: copied ? 'hsl(142,69%,58%)' : 'hsl(215,20%,60%)',
+                          bgcolor: copied ? 'rgba(46,200,110,0.1)' : 'rgba(255,255,255,0.05)',
+                          '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
                           transition: 'all 0.2s',
                         }}
                       >
-                        {isFav ? <StarIcon /> : <StarBorderIcon />}
+                        {copied ? <CheckIcon fontSize="small" /> : <ShareIcon fontSize="small" />}
                       </IconButton>
-                    </span>
-                  </Tooltip>
+                    </Tooltip>
+                  </Box>
                 </Box>
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, mb: 2.5 }}>

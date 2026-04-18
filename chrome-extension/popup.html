@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghostie Score</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C7.03 2 3 6.03 3 11v9l3-3 3 3 3-3 3 3 3-3v-9c0-4.97-4.03-9-9-9z" fill="url(#grad)"/>
+          <circle cx="9" cy="11" r="1.5" fill="hsl(228,38%,16%)"/>
+          <circle cx="15" cy="11" r="1.5" fill="hsl(228,38%,16%)"/>
+          <defs>
+            <linearGradient id="grad" x1="3" y1="2" x2="21" y2="20" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="hsl(142,69%,45%)"/>
+              <stop offset="100%" stop-color="hsl(200,80%,50%)"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="logo-text">Ghostie</span>
+      </div>
+      <button class="settings-btn" id="loginBtn" title="Sign in">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v1h20v-1c0-3.3-6.7-5-10-5z"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Search form -->
+    <div class="search-section" id="searchSection">
+      <div class="field-row">
+        <label class="field-label">Business</label>
+        <input class="field-input" id="businessName" type="text" placeholder="e.g. Tesla" />
+      </div>
+      <div class="field-row">
+        <label class="field-label">Location</label>
+        <input class="field-input" id="location" type="text" placeholder="e.g. United States" />
+      </div>
+      <div class="field-row">
+        <label class="field-label">Category</label>
+        <input class="field-input" id="category" type="text" placeholder="e.g. Technology" />
+      </div>
+      <button class="analyse-btn" id="analyseBtn">Analyse</button>
+    </div>
+
+    <!-- Loading state -->
+    <div class="loading-section hidden" id="loadingSection">
+      <div class="spinner"></div>
+      <p class="loading-text" id="loadingText">Analysing sentiment…</p>
+    </div>
+
+    <!-- Result -->
+    <div class="result-section hidden" id="resultSection">
+      <div class="score-hero">
+        <canvas id="gaugeCanvas" width="120" height="70"></canvas>
+        <div class="score-number" id="scoreNumber">—</div>
+        <div class="score-label" id="scoreBadge">—</div>
+      </div>
+
+      <div class="business-info">
+        <div class="biz-name" id="resultName">—</div>
+        <div class="biz-meta" id="resultMeta">—</div>
+        <div class="rating" id="resultRating"></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-pill">
+          <span class="stat-val" id="statItems">—</span>
+          <span class="stat-lbl">analysed</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val" id="statRating">—</span>
+          <span class="stat-lbl">star rating</span>
+        </div>
+      </div>
+
+      <div class="keywords" id="keywords"></div>
+
+      <div class="actions">
+        <button class="action-btn secondary" id="resetBtn">Search again</button>
+        <button class="action-btn primary" id="openBtn">Open Ghostie</button>
+      </div>
+    </div>
+
+    <!-- Not yet scored -->
+    <div class="unscoredSection hidden" id="unscoredSection">
+      <div class="unscored-icon">?</div>
+      <p class="unscored-title" id="unscoredName">Not yet scored</p>
+      <p class="unscored-sub">No data collected yet. Ghostie will fetch reviews, news and Reddit posts — this takes about 30–60 seconds.</p>
+      <button class="action-btn primary" id="collectBtn">Collect &amp; Analyse</button>
+      <button class="action-btn secondary" id="unscoredBackBtn">Search again</button>
+    </div>
+
+    <!-- Error -->
+    <div class="error-section hidden" id="errorSection">
+      <div class="error-icon">!</div>
+      <p class="error-msg" id="errorMsg">Something went wrong.</p>
+      <button class="action-btn secondary" id="retryBtn">Try again</button>
+    </div>
+
+    <!-- Auth prompt -->
+    <div class="auth-section hidden" id="authSection">
+      <div class="auth-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="url(#g2)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C7.03 2 3 6.03 3 11v9l3-3 3 3 3-3 3 3 3-3v-9c0-4.97-4.03-9-9-9z"/>
+          <defs>
+            <linearGradient id="g2" x1="3" y1="2" x2="21" y2="20" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="hsl(142,69%,45%)"/>
+              <stop offset="100%" stop-color="hsl(200,80%,50%)"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <p class="auth-title">Sign in to Ghostie</p>
+      <p class="auth-sub">Access real-time sentiment scores for any business.</p>
+      <button class="action-btn primary" id="signInBtn">Sign in</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

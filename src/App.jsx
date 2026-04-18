@@ -13,6 +13,7 @@ import HistoryPage from './pages/HistoryPage';
 import DataCollectionPage from './pages/DataCollectionPage';
 import DataRetrievalPage from './pages/DataRetrievalPage';
 import FavouritesPage from './pages/FavouritesPage';
+import ScoreCardPage from './pages/ScoreCardPage';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -33,6 +34,7 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            <Route path="/score/:name" element={<ScoreCardPage />} />
             <Route path="/signin" element={<GuestRoute><SignInPage /></GuestRoute>} />
             <Route path="/signup" element={<GuestRoute><SignUpPage /></GuestRoute>} />
             <Route path="/*" element={

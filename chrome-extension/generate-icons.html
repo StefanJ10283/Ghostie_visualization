@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- Open this file in a browser, then right-click each canvas and "Save image as" to icons/icon16.png etc. -->
+<html>
+<body style="background:#1a1f36;display:flex;gap:20px;padding:20px;align-items:flex-end">
+<script>
+function draw(size) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  c.title = `icon${size}.png`;
+  document.body.appendChild(c);
+  const ctx = c.getContext('2d');
+  const g = ctx.createLinearGradient(0, 0, size, size);
+  g.addColorStop(0, 'hsl(142,69%,45%)');
+  g.addColorStop(1, 'hsl(200,80%,50%)');
+  ctx.fillStyle = g;
+  // Ghost body path scaled to size
+  const s = size / 24;
+  ctx.scale(s, s);
+  const p = new Path2D('M12 2C7.03 2 3 6.03 3 11v9l3-3 3 3 3-3 3 3 3-3v-9c0-4.97-4.03-9-9-9z');
+  ctx.fill(p);
+  // Eyes
+  ctx.fillStyle = 'hsl(228,38%,13%)';
+  ctx.beginPath(); ctx.arc(9, 11, 1.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(15, 11, 1.5, 0, Math.PI * 2); ctx.fill();
+  const label = document.createElement('div');
+  label.textContent = `${size}px`;
+  label.style.cssText = 'color:#fff;font:11px sans-serif;text-align:center;margin-top:4px';
+  c.insertAdjacentElement('afterend', label);
+}
+[16, 48, 128].forEach(draw);
+</script>
+</body>
+</html>

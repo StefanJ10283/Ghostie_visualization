@@ -32,11 +32,24 @@ export function AuthProvider({ children }) {
   });
   const [accounts, setAccounts] = useState(loadAccounts);
 
+  const _pushToExtension = (newToken) => {
+    try {
+      if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+        chrome.runtime.sendMessage(
+          undefined, // extension ID — undefined lets Chrome find it via externally_connectable
+          { type: 'GHOSTIE_SET_TOKEN', token: newToken },
+          () => { /* fire-and-forget */ },
+        );
+      }
+    } catch { /* extension not installed */ }
+  };
+
   const _activate = (newToken) => {
     const newUser = parseToken(newToken);
     localStorage.setItem('ghostie_token', newToken);
     setToken(newToken);
     setUser(newUser);
+    _pushToExtension(newToken);
 
     setAccounts((prev) => {
       // Ensure the currently active account is saved before switching
