@@ -14,6 +14,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CategoryIcon from '@mui/icons-material/Category';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import DownloadIcon from '@mui/icons-material/Download';
 import {
   AreaChart, Area, ResponsiveContainer, Tooltip as ReTooltip, XAxis,
 } from 'recharts';
@@ -118,6 +119,8 @@ export default function ScoreCardPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownload = () => window.print();
+
   const score = sentiment?.overall_score ?? null;
   const color = score !== null ? scoreColor(score) : 'hsl(215,20%,60%)';
 
@@ -128,8 +131,15 @@ export default function ScoreCardPage() {
       display: 'flex',
       flexDirection: 'column',
     }}>
+      <style>{`
+        @media print {
+          body { background: #fff !important; color: #000 !important; }
+          .ghostie-no-print { display: none !important; }
+          #ghostie-overlay-root { display: none !important; }
+        }
+      `}</style>
       {/* Top bar */}
-      <Box sx={{
+      <Box className="ghostie-no-print" sx={{
         px: { xs: 2, md: 4 }, py: 2,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderBottom: '1px solid hsl(230,25%,20%)',
@@ -345,7 +355,7 @@ export default function ScoreCardPage() {
             )}
 
             {/* Actions */}
-            <Box sx={{ ...fadeUp(0.2), display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <Box className="ghostie-no-print" sx={{ ...fadeUp(0.2), display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Tooltip title={copied ? 'Copied!' : 'Copy link to share'}>
                 <Button
                   variant="outlined"
@@ -360,6 +370,14 @@ export default function ScoreCardPage() {
                   {copied ? 'Link copied' : 'Share scorecard'}
                 </Button>
               </Tooltip>
+              <Button
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={handleDownload}
+                sx={{ borderColor: 'hsl(230,25%,30%)', color: 'hsl(215,20%,70%)', '&:hover': { borderColor: 'hsl(215,20%,50%)', color: 'hsl(210,40%,93%)' } }}
+              >
+                Download PDF
+              </Button>
               <Button
                 variant="contained"
                 endIcon={<AnalyticsIcon />}
@@ -377,8 +395,8 @@ export default function ScoreCardPage() {
       </Box>
 
       {/* Footer */}
-      <Divider sx={{ borderColor: 'hsl(230,25%,20%)' }} />
-      <Box sx={{ px: 4, py: 2, textAlign: 'center' }}>
+      <Divider className="ghostie-no-print" sx={{ borderColor: 'hsl(230,25%,20%)' }} />
+      <Box className="ghostie-no-print" sx={{ px: 4, py: 2, textAlign: 'center' }}>
         <Typography variant="caption" sx={{ color: 'hsl(215,20%,40%)' }}>
           Powered by{' '}
           <Box component="span" sx={{ color: 'hsl(142,69%,48%)', fontWeight: 600 }}>Ghostie</Box>

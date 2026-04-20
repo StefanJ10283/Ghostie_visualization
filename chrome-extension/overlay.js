@@ -158,15 +158,20 @@
   `;
   document.head.appendChild(style);
 
-  // ── DOM ─────────────────────────────────────────────────────────────────────
+  // ── DOM (created lazily on first message) ────────────────────────────────────
 
-  const root = document.createElement('div');
-  root.id = 'ghostie-overlay-root';
+  let root = null;
+  let card = null;
 
-  const card = document.createElement('div');
-  card.id = 'ghostie-overlay-card';
-  root.appendChild(card);
-  document.body.appendChild(root);
+  function ensureDOM() {
+    if (root) return;
+    root = document.createElement('div');
+    root.id = 'ghostie-overlay-root';
+    card = document.createElement('div');
+    card.id = 'ghostie-overlay-card';
+    root.appendChild(card);
+    document.body.appendChild(root);
+  }
 
   let hideTimer = null;
 
@@ -176,12 +181,13 @@
   }
 
   function hideCard() {
+    if (!root) return;
     card.classList.add('ghostie-hiding');
-    card.addEventListener('animationend', () => { root.style.display = 'none'; }, { once: true });
+    card.addEventListener('animationend', () => { root.remove(); root = null; card = null; }, { once: true });
   }
 
   function showCard() {
-    root.style.display = '';
+    ensureDOM();
     card.classList.remove('ghostie-hiding');
   }
 
@@ -220,6 +226,7 @@
   }
 
   function renderLoading() {
+    ensureDOM();
     card.innerHTML = renderHeader() + `
       <div class="ghostie-loading">
         <div class="ghostie-spinner"></div>
@@ -232,6 +239,7 @@
   }
 
   function renderResult(data, originalText) {
+    ensureDOM();
     const score   = data.score ?? 0;
     const color   = scoreColor(score);
     const [label, cls] = sentimentClass(score);
@@ -266,6 +274,7 @@
   }
 
   function renderError(message) {
+    ensureDOM();
     card.innerHTML = renderHeader() + `<div class="ghostie-error">${message}</div>`;
     wireClose();
     showCard();
