@@ -119,7 +119,17 @@ export default function ScoreCardPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDownload = () => window.print();
+  const handleDownload = async () => {
+    const { default: jsPDF } = await import('jspdf');
+    const { default: html2canvas } = await import('html2canvas');
+    const el = document.getElementById('ghostie-scorecard');
+    if (!el) return;
+    const canvas = await html2canvas(el, { backgroundColor: '#0f1229', scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [canvas.width / 2, canvas.height / 2] });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+    pdf.save(`${decodedName}-ghostie-scorecard.pdf`);
+  };
 
   const score = sentiment?.overall_score ?? null;
   const color = score !== null ? scoreColor(score) : 'hsl(215,20%,60%)';
@@ -195,7 +205,7 @@ export default function ScoreCardPage() {
         )}
 
         {!loading && sentiment && (
-          <>
+          <Box id="ghostie-scorecard">
             {/* Hero card */}
             <Box sx={{
               ...fadeUp(0),
@@ -390,7 +400,7 @@ export default function ScoreCardPage() {
                 Analyse with Ghostie
               </Button>
             </Box>
-          </>
+          </Box>
         )}
       </Box>
 
