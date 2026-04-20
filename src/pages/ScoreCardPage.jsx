@@ -124,10 +124,30 @@ export default function ScoreCardPage() {
     const { default: html2canvas } = await import('html2canvas');
     const el = document.getElementById('ghostie-scorecard');
     if (!el) return;
-    const canvas = await html2canvas(el, { backgroundColor: '#0f1229', scale: 2, useCORS: true });
+
+    const pad = 24; // extra space for SVG overflow (gauge arc)
+    const rect = el.getBoundingClientRect();
+    const contentH = el.scrollHeight;
+
+    const canvas = await html2canvas(document.body, {
+      backgroundColor: '#0f1229',
+      scale: 2,
+      useCORS: true,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      x: rect.left - pad,
+      y: rect.top + window.scrollY - pad,
+      width: rect.width + pad * 2,
+      height: contentH + pad * 2,
+      windowWidth: document.documentElement.offsetWidth,
+      windowHeight: document.documentElement.offsetHeight,
+    });
+
     const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [canvas.width / 2, canvas.height / 2] });
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+    const pw = canvas.width / 2;
+    const ph = canvas.height / 2;
+    const pdf = new jsPDF({ orientation: pw > ph ? 'landscape' : 'portrait', unit: 'px', format: [pw, ph] });
+    pdf.addImage(imgData, 'PNG', 0, 0, pw, ph);
     pdf.save(`${decodedName}-ghostie-scorecard.pdf`);
   };
 
@@ -205,6 +225,7 @@ export default function ScoreCardPage() {
         )}
 
         {!loading && sentiment && (
+          <>
           <Box id="ghostie-scorecard">
             {/* Hero card */}
             <Box sx={{
@@ -364,43 +385,45 @@ export default function ScoreCardPage() {
               </Box>
             )}
 
-            {/* Actions */}
-            <Box className="ghostie-no-print" sx={{ ...fadeUp(0.2), display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Tooltip title={copied ? 'Copied!' : 'Copy link to share'}>
-                <Button
-                  variant="outlined"
-                  startIcon={copied ? <CheckIcon /> : <ShareIcon />}
-                  onClick={handleShare}
-                  sx={{
-                    borderColor: copied ? 'hsl(142,69%,58%)' : 'hsl(230,25%,30%)',
-                    color: copied ? 'hsl(142,69%,58%)' : 'hsl(215,20%,70%)',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  {copied ? 'Link copied' : 'Share scorecard'}
-                </Button>
-              </Tooltip>
+          </Box>
+
+          {/* Actions — outside scorecard so they're not captured in the PDF */}
+          <Box className="ghostie-no-print" sx={{ ...fadeUp(0.2), display: 'flex', gap: 2, flexWrap: 'wrap', mt: 3 }}>
+            <Tooltip title={copied ? 'Copied!' : 'Copy link to share'}>
               <Button
                 variant="outlined"
-                startIcon={<DownloadIcon />}
-                onClick={handleDownload}
-                sx={{ borderColor: 'hsl(230,25%,30%)', color: 'hsl(215,20%,70%)', '&:hover': { borderColor: 'hsl(215,20%,50%)', color: 'hsl(210,40%,93%)' } }}
-              >
-                Download PDF
-              </Button>
-              <Button
-                variant="contained"
-                endIcon={<AnalyticsIcon />}
-                onClick={() => navigate('/signin')}
+                startIcon={copied ? <CheckIcon /> : <ShareIcon />}
+                onClick={handleShare}
                 sx={{
-                  background: 'linear-gradient(135deg, hsl(142,69%,42%), hsl(142,69%,35%))',
-                  '&:hover': { background: 'linear-gradient(135deg, hsl(142,69%,48%), hsl(142,69%,40%))' },
+                  borderColor: copied ? 'hsl(142,69%,58%)' : 'hsl(230,25%,30%)',
+                  color: copied ? 'hsl(142,69%,58%)' : 'hsl(215,20%,70%)',
+                  transition: 'all 0.2s',
                 }}
               >
-                Analyse with Ghostie
+                {copied ? 'Link copied' : 'Share scorecard'}
               </Button>
-            </Box>
+            </Tooltip>
+            <Button
+              variant="outlined"
+              startIcon={<DownloadIcon />}
+              onClick={handleDownload}
+              sx={{ borderColor: 'hsl(230,25%,30%)', color: 'hsl(215,20%,70%)', '&:hover': { borderColor: 'hsl(215,20%,50%)', color: 'hsl(210,40%,93%)' } }}
+            >
+              Download PDF
+            </Button>
+            <Button
+              variant="contained"
+              endIcon={<AnalyticsIcon />}
+              onClick={() => navigate('/signin')}
+              sx={{
+                background: 'linear-gradient(135deg, hsl(142,69%,42%), hsl(142,69%,35%))',
+                '&:hover': { background: 'linear-gradient(135deg, hsl(142,69%,48%), hsl(142,69%,40%))' },
+              }}
+            >
+              Analyse with Ghostie
+            </Button>
           </Box>
+          </>
         )}
       </Box>
 
