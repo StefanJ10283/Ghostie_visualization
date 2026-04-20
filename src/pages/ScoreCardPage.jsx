@@ -120,40 +120,18 @@ export default function ScoreCardPage() {
   };
 
   const handleDownload = async () => {
+    const { toPng } = await import('html-to-image');
     const { default: jsPDF } = await import('jspdf');
-    const { default: html2canvas } = await import('html2canvas');
     const el = document.getElementById('ghostie-scorecard');
     if (!el) return;
-
-    const pad = 32;
-    const rect = el.getBoundingClientRect();
-    // Use actual rendered height, not scrollHeight (which reflects the stretched flex container)
-    const captureH = rect.height;
-
-    const canvas = await html2canvas(document.body, {
-      backgroundColor: '#0f1229',
-      scale: 2,
-      useCORS: true,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      x: rect.left - pad,
-      y: rect.top + window.scrollY - pad,
-      width: rect.width + pad * 2,
-      height: captureH + pad * 2,
-      windowWidth: document.documentElement.offsetWidth,
-      windowHeight: document.documentElement.offsetHeight,
-      onclone: (clonedDoc) => {
-        // The hero card has overflow:hidden which clips the gauge SVG arc — remove it for capture
-        const heroCard = clonedDoc.getElementById('ghostie-hero-card');
-        if (heroCard) heroCard.style.overflow = 'visible';
-      },
-    });
-
-    const imgData = canvas.toDataURL('image/png');
-    const pw = canvas.width / 2;
-    const ph = canvas.height / 2;
+    const dataUrl = await toPng(el, { pixelRatio: 2, backgroundColor: 'hsl(234,40%,10%)' });
+    const img = new Image();
+    img.src = dataUrl;
+    await new Promise((res) => { img.onload = res; });
+    const pw = img.naturalWidth / 2;
+    const ph = img.naturalHeight / 2;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [pw, ph] });
-    pdf.addImage(imgData, 'PNG', 0, 0, pw, ph);
+    pdf.addImage(dataUrl, 'PNG', 0, 0, pw, ph);
     pdf.save(`${decodedName}-ghostie-scorecard.pdf`);
   };
 
